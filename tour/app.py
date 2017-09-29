@@ -3,7 +3,8 @@
 from flask import Flask, render_template
 
 from tour import commands, public, user
-from tour.extensions import bcrypt, cache, csrf_protect, db, debug_toolbar, login_manager, migrate, webpack
+from tour.extensions import bcrypt, cache, csrf_protect, db, debug_toolbar
+from tour.extensions import api, auth, login_manager, migrate, webpack
 from tour.settings import ProdConfig
 
 
@@ -32,6 +33,7 @@ def register_extensions(app):
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
     webpack.init_app(app)
+    api.init_app(app)
     return None
 
 

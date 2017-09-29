@@ -8,6 +8,9 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_webpack import Webpack
 from flask_wtf.csrf import CSRFProtect
+from flask_restful import Api
+from flask_httpauth import HTTPBasicAuth
+
 
 bcrypt = Bcrypt()
 csrf_protect = CSRFProtect()
@@ -17,3 +20,5 @@ migrate = Migrate()
 cache = Cache()
 debug_toolbar = DebugToolbarExtension()
 webpack = Webpack()
+api = Api()
+auth = HTTPBasicAuth()

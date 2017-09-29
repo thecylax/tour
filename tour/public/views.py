@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """Public section, including homepage and signup."""
+
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
 
-from tour.extensions import login_manager
+from tour.extensions import api, login_manager
 from tour.public.forms import LoginForm
+from tour.public.points import PointsAPI, PointsListAPI
 from tour.user.forms import RegisterForm
 from tour.user.models import User
 from tour.utils import flash_errors
@@ -17,6 +19,9 @@ def load_user(user_id):
     """Load user by ID."""
     return User.get_by_id(int(user_id))
 
+
+api.add_resource(PointsListAPI, '/tour/api/v1.0/points', endpoint='points')
+api.add_resource(PointsAPI, '/tour/api/v1.0/points/<int:id>', endpoint='point')
 
 @blueprint.route('/', methods=['GET', 'POST'])
 def home():
