@@ -51,3 +51,8 @@ env/
 # webpack-built files
 /tour/static/build/
 /tour/webpack/manifest.json
+package-lock.json
+
+# migrations
+dev.db
+/migrations/*
