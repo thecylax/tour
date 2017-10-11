@@ -21,11 +21,11 @@ class Point(Model):
         """Create instance."""
         db.Model.__init__(self, name=name, category=category)
         
-        if category not in categories:
-            self.category = '--'
-        else:
-            self.category = category[0]
-
+#        if category not in categories:
+#            self.category = '--'
+#        else:
+#            self.category = category[0]
+        self.category = category[0]
         self.name = name[0]
         self.public = public
         self.latitude = latitude
