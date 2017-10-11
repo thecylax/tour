@@ -47,6 +47,13 @@ Then on command line you can test the access:
 
     $ curl -u <username:password> http://localhost:5000/tour/api/v1.0/points
 
+To use with postman, the user and password is:
+
+    user: test
+    
+    password: qwe123
+
+
 Deployment
 ----------
 
