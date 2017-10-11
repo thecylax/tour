@@ -6,7 +6,7 @@ from flask_login import login_required, login_user, logout_user
 
 from tour.extensions import api, login_manager
 from tour.public.forms import LoginForm
-from tour.public.points import PointsAPI, PointsListAPI
+from tour.public.points import PointsAPI, PointsListAPI, PointsNearAPI
 from tour.public.models import Point
 from tour.user.forms import RegisterForm
 from tour.user.models import User
@@ -22,6 +22,7 @@ def load_user(user_id):
 
 
 api.add_resource(PointsListAPI, '/tour/api/v1.0/points', endpoint='points')
+api.add_resource(PointsNearAPI, '/tour/api/v1.0/points/position', endpoint='position')
 api.add_resource(PointsAPI, '/tour/api/v1.0/points/<int:id>', endpoint='point')
 
 @blueprint.route('/', methods=['GET', 'POST'])
@@ -54,7 +55,10 @@ def register():
     """Register new user."""
     form = RegisterForm(request.form)
     if form.validate_on_submit():
-        User.create(username=form.username.data, email=form.email.data, password=form.password.data, active=True)
+        User.create(username=form.username.data,
+                    email=form.email.data,
+                    password=form.password.data,
+                    active=True)
         flash('Thank you for registering. You can now log in.', 'success')
         return redirect(url_for('public.home'))
     else:

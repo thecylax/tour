@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from geopy.distance import great_circle
+
 from flask import abort, jsonify, make_response
 from flask_restful import Resource, reqparse, fields, marshal
 from tour.database import db
@@ -31,7 +33,16 @@ point_fields = {
     'category':  fields.String,
     'public':    fields.Boolean,
     'latitude':  fields.String,
-    'longitude': fields.String
+    'longitude': fields.String,
+}
+
+point_fields_near = {
+    'name':      fields.String,
+    'category':  fields.String,
+    'public':    fields.Boolean,
+    'latitude':  fields.String,
+    'longitude': fields.String,
+    'distance':  fields.String
 }
 
 
@@ -131,18 +142,6 @@ class PointsAPI(Resource):
 
         return {'point': marshal(point, point_fields)}
 
-    def put(self, id):
-        point = [point for point in points if point['id'] == id]
-        if len(point) == 0:
-            abort(404)
-        point = point[0]
-        args = self.reqparse.parse_args()
-        for k, v in args.iteritems():
-            if v is not None:
-                point[k] = v
-
-        return {'point': marshal(point, point_fields)}
-
     def delete(self, id):
         query = Point.query.filter_by(id=id).first()
 
@@ -153,3 +152,38 @@ class PointsAPI(Resource):
             abort(404)
 
         return {'result': True}
+
+class PointsNearAPI(Resource):
+    decorators = [auth.login_required]
+
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('latitude', type=str, required=True, location='json')
+        self.reqparse.add_argument('longitude', type=str, required=True, location='json')
+        super(PointsNearAPI, self).__init__()
+
+    def post(self):
+        max_distance = 5.0
+        args = self.reqparse.parse_args()
+        latitude = args['latitude']
+        longitude = args['longitude']
+        points = []
+
+        query = Point.query.all()
+        current_location = (float(latitude), float(longitude))
+
+        for point in query:
+            target = (float(point.latitude), float(point.longitude))
+            distance = great_circle(current_location, target).kilometers
+            if distance <= max_distance:
+                point = {
+                    'name': point.name,
+                    'category': point.category,
+                    'public': point.public,
+                    'latitude': latitude,
+                    'longitude': longitude,
+                    'distance': distance
+                }
+                points.append(point)
+
+        return {'points': [marshal(point, point_fields_near) for point in points]}
