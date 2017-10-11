@@ -2,40 +2,45 @@
 
 from flask import abort, jsonify, make_response
 from flask_restful import Resource, reqparse, fields, marshal
+from tour.database import db
 from tour.extensions import auth
+from tour.public.models import Point
+from tour.user.models import User
 
-points = [
-    {
-        'id': 1,
-        'name': u'Bacacheri',
-        'category': u'Park',
-        'public': False,
-        'latitude': -25.3898122,
-        'longitude': -49.2399535
-    },
-    {
-        'id': 2,
-        'name': u'Tiki Liki',
-        'category': u'Restaurant',
-        'public': False,
-        'latitude': -25.459473,
-        'longitude': -49.2996737
-    }
-]
+#points = [
+#    {
+#        'id': 1,
+#        'name': u'Bacacheri',
+#        'category': u'Park',
+#        'public': False,
+#        'latitude': '-25.3898122',
+#        'longitude': '-49.2399535'
+#    },
+#    {
+#        'id': 2,
+#        'name': u'Tiki Liki',
+#       'category': u'Restaurant',
+#      'public': False,
+#        'latitude': '-25.459473',
+#        'longitude': '-49.2996737'
+#    }
+#]
 
 point_fields = {
     'name':      fields.String,
     'category':  fields.String,
     'public':    fields.Boolean,
-    'latitude':  fields.Fixed,
-    'longitude': fields.Fixed
+    'latitude':  fields.String,
+    'longitude': fields.String
 }
 
-@auth.get_password
-def get_password(username):
-    if username == 'robson':
-        return 'python'
-    return None
+
+@auth.verify_password
+def verify_password(username, password):
+    user = User.query.filter_by(username=username).first()
+    if not user or not user.check_password(password):
+        return False
+    return True
 
 @auth.error_handler
 def unauthorized():
@@ -50,22 +55,51 @@ class PointsListAPI(Resource):
                                    help='No point name provided', location='json')
         self.reqparse.add_argument('category', type=str, required=True,
                                    help='No point category provided', location='json')
+        self.reqparse.add_argument('public', type=bool, required=False, location='json')
+        self.reqparse.add_argument('latitude', type=str, required=False, location='json')
+        self.reqparse.add_argument('longitude', type=str, required=False, location='json')
         super(PointsListAPI, self).__init__()
 
     def get(self):
+        query = Point.query.all()
+
+        points = []
+        for point in query:
+            point = {
+                'name': point.name,
+                'category': point.category,
+                'public': point.public,
+                'latitude': point.latitude,
+                'longitude': point.longitude
+            }
+            points.append(point)
+
         return {'points': [marshal(point, point_fields) for point in points]}
 
     def post(self):
         args = self.reqparse.parse_args()
+        name = args['name'],
+        category = args['category'],
+        public = args['public'] if args['public'] is not None else False
+        latitude = args['latitude'] if args['latitude'] is not None else '0'
+        longitude = args['longitude'] if args['longitude'] is not None else '0'
+
+        point = Point(name=name,
+                      category=category,
+                      public=public,
+                      latitude=latitude,
+                      longitude=longitude)
+
+        db.session.add(point)
+        db.session.commit()
+
         point = {
-            'id': points[-1]['id'] + 1,
-            'name': args['name'],
-            'category': args['category'],
-            'public': False,
-            'latitude': args['latitude'],
-            'longitude': args['longitude']
+            'name': name[0],
+            'category': category[0],
+            'public': public,
+            'latitude': latitude,
+            'longitude': longitude
         }
-        points.append(point)
 
         return {'point': marshal(point, point_fields)}, 201
 
@@ -82,11 +116,20 @@ class PointsAPI(Resource):
         super(PointsAPI, self).__init__()
 
     def get(self, id):
-        point = [point for point in points if point['id'] == id]
-        if len(point) == 0:
+        query = Point.query.filter_by(id=id).first()
+
+        if query is not None:
+            point = {
+                'name': query.name,
+                'category': query.category,
+                'public': query.public,
+                'latitude': query.latitude,
+                'longitude': query.longitude
+            }
+        else:
             abort(404)
 
-        return {'point': marshal(point[0], point_fields)}
+        return {'point': marshal(point, point_fields)}
 
     def put(self, id):
         point = [point for point in points if point['id'] == id]
@@ -101,9 +144,12 @@ class PointsAPI(Resource):
         return {'point': marshal(point, point_fields)}
 
     def delete(self, id):
-        point = [point for point in points if point['id'] == id]
-        if len(point) == 0:
+        query = Point.query.filter_by(id=id).first()
+
+        if query is not None:
+            db.session.delete(query)
+            db.session.commit()
+        else:
             abort(404)
-        points.remove(point[0])
 
         return {'result': True}

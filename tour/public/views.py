@@ -7,6 +7,7 @@ from flask_login import login_required, login_user, logout_user
 from tour.extensions import api, login_manager
 from tour.public.forms import LoginForm
 from tour.public.points import PointsAPI, PointsListAPI
+from tour.public.models import Point
 from tour.user.forms import RegisterForm
 from tour.user.models import User
 from tour.utils import flash_errors
