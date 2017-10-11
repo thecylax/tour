@@ -40,6 +40,12 @@ database tables and perform the initial migration ::
     flask db upgrade
     npm start
 
+So you need to create a new user, so you can access the main page in the browser 
+or directly via SQL console.
+
+Then on command line you can test the access:
+
+    $ curl -u <username:password> http://localhost:5000/tour/api/v1.0/points
 
 Deployment
 ----------
@@ -113,8 +119,12 @@ in your ``settings.py``::
 Endpoints
 ---------
 
-/tour/api/v1.0/points           (GET, HEAD, OPTIONS, POST)
+GET     /tour/api/v1.0/points          (Retrieve a list of points)
 
-/tour/api/v1.0/points/<int:id> 	(DELETE, GET, HEAD, OPTIONS)
+GET     /tour/api/v1.0/points/<int:id> (Retrieve a point)
 
-/tour/api/v1.0/points/position 	(OPTIONS, POST)
+POST    /tour/api/v1.0/points          (Create a new point)
+
+POST    /tour/api/v1.0/points/position (Retrieve a list of points within a 5km radius)
+
+DELETE  /tour/api/v1.0/points/<int:id> (Delete a point)
