@@ -1,0 +1,119 @@
+{
+	"id": "eee6b004-0bef-2210-6022-2de63249b342",
+	"name": "snowman",
+	"description": "",
+	"order": [
+		"e1a5bf25-2049-77b0-5110-370e3c4e5525",
+		"bdede586-d4db-06d6-bfd1-f1107962a2a5",
+		"044c3574-a386-d0d9-6125-f318976c20f3"
+	],
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1507720849174,
+	"owner": "2857229",
+	"public": false,
+	"requests": [
+		{
+			"id": "044c3574-a386-d0d9-6125-f318976c20f3",
+			"headers": "Authorization: Basic dGVzdDpxd2UxMjM=\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Basic dGVzdDpxd2UxMjM=",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:5000/tour/api/v1.0/points",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "eee6b004-0bef-2210-6022-2de63249b342",
+			"data": null,
+			"dataMode": "params",
+			"name": "localhost:5000/tour/api/v1.0/points",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1507725938294,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {}
+		},
+		{
+			"id": "bdede586-d4db-06d6-bfd1-f1107962a2a5",
+			"headers": "Authorization: Basic dGVzdDpxd2UxMjM=\nContent-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Basic dGVzdDpxd2UxMjM=",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:5000/tour/api/v1.0/points/position",
+			"queryParams": [],
+			"preRequestScript": "",
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": "",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1507725866733,
+			"name": "localhost:5000/tour/api/v1.0/points/position",
+			"description": "Get nearby points",
+			"collectionId": "eee6b004-0bef-2210-6022-2de63249b342",
+			"responses": [],
+			"rawModeData": "{\n\t\"latitude\": \"-25.4004291\",\n\t\"longitude\": \"-49.1951062\"\n}\n"
+		},
+		{
+			"id": "e1a5bf25-2049-77b0-5110-370e3c4e5525",
+			"headers": "Authorization: Basic dGVzdDpxd2UxMjM=\nContent-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Basic dGVzdDpxd2UxMjM=",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:5000/tour/api/v1.0/points",
+			"queryParams": [],
+			"preRequestScript": "",
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": "",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1507725861369,
+			"name": "localhost:5000/tour/api/v1.0/points",
+			"description": "",
+			"collectionId": "eee6b004-0bef-2210-6022-2de63249b342",
+			"responses": [],
+			"rawModeData": "{\n\t\"name\": \"Tingui\",\n\t\"category\": \"Park\",\n\t\"latitude\": \"-25.3923778\",\n\t\"longitude\": \"-49.3072479\",\n\t\"public\": true\n}\n"
+		}
+	]
+}
