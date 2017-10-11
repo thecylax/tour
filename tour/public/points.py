@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Module responsible for setting up and handling API endpoints"""
 
 from geopy.distance import great_circle
 
@@ -8,25 +9,6 @@ from tour.database import db
 from tour.extensions import auth
 from tour.public.models import Point
 from tour.user.models import User
-
-#points = [
-#    {
-#        'id': 1,
-#        'name': u'Bacacheri',
-#        'category': u'Park',
-#        'public': False,
-#        'latitude': '-25.3898122',
-#        'longitude': '-49.2399535'
-#    },
-#    {
-#        'id': 2,
-#        'name': u'Tiki Liki',
-#       'category': u'Restaurant',
-#      'public': False,
-#        'latitude': '-25.459473',
-#        'longitude': '-49.2996737'
-#    }
-#]
 
 point_fields = {
     'name':      fields.String,
@@ -48,6 +30,8 @@ point_fields_near = {
 
 @auth.verify_password
 def verify_password(username, password):
+    """Verify user password"""
+
     user = User.query.filter_by(username=username).first()
     if not user or not user.check_password(password):
         return False
@@ -55,9 +39,13 @@ def verify_password(username, password):
 
 @auth.error_handler
 def unauthorized():
+    """Unauthorized handler"""
+
     return make_response(jsonify({'message': 'Unauthorized access'}), 403)
 
 class PointsListAPI(Resource):
+    """API resource to handle endpoints and http methods"""
+
     decorators = [auth.login_required]
 
     def __init__(self):
@@ -72,6 +60,8 @@ class PointsListAPI(Resource):
         super(PointsListAPI, self).__init__()
 
     def get(self):
+        """GET method handler"""
+
         query = Point.query.all()
 
         points = []
@@ -88,6 +78,8 @@ class PointsListAPI(Resource):
         return {'points': [marshal(point, point_fields) for point in points]}
 
     def post(self):
+        """POST method handler"""
+
         args = self.reqparse.parse_args()
         name = args['name'],
         category = args['category'],
@@ -115,6 +107,8 @@ class PointsListAPI(Resource):
         return {'point': marshal(point, point_fields)}, 201
 
 class PointsAPI(Resource):
+    """API resource to handle endpoints and http methods by point id"""
+
     decorators = [auth.login_required]
 
     def __init__(self):
@@ -127,6 +121,7 @@ class PointsAPI(Resource):
         super(PointsAPI, self).__init__()
 
     def get(self, id):
+        """GET method handler point by id"""
         query = Point.query.filter_by(id=id).first()
 
         if query is not None:
@@ -143,6 +138,8 @@ class PointsAPI(Resource):
         return {'point': marshal(point, point_fields)}
 
     def delete(self, id):
+        """DELETE method handler point by id"""
+
         query = Point.query.filter_by(id=id).first()
 
         if query is not None:
@@ -154,6 +151,11 @@ class PointsAPI(Resource):
         return {'result': True}
 
 class PointsNearAPI(Resource):
+    """
+    API resource to handle endpoints and http methods to find nearby points
+    given a location.
+    """
+
     decorators = [auth.login_required]
 
     def __init__(self):
@@ -163,6 +165,8 @@ class PointsNearAPI(Resource):
         super(PointsNearAPI, self).__init__()
 
     def post(self):
+        """POST method handler for a given location"""
+
         max_distance = 5.0
         args = self.reqparse.parse_args()
         latitude = args['latitude']
