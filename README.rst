@@ -109,3 +109,12 @@ should cache all your assets forever by including the following line
 in your ``settings.py``::
 
     SEND_FILE_MAX_AGE_DEFAULT = 31556926  # one year
+
+Endpoints
+---------
+
+/tour/api/v1.0/points           (GET, HEAD, OPTIONS, POST)
+
+/tour/api/v1.0/points/<int:id> 	(DELETE, GET, HEAD, OPTIONS)
+
+/tour/api/v1.0/points/position 	(OPTIONS, POST)
