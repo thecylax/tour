@@ -4,7 +4,7 @@ from flask import Flask, render_template
 
 from tour import commands, public, user
 from tour.extensions import bcrypt, cache, csrf_protect, db, debug_toolbar
-from tour.extensions import api, auth, login_manager, migrate, webpack
+from tour.extensions import api, login_manager, migrate, webpack
 from tour.settings import ProdConfig
 
 
@@ -62,7 +62,8 @@ def register_shellcontext(app):
         """Shell context objects."""
         return {
             'db': db,
-            'User': user.models.User}
+            'User': user.models.User,
+            'Point': public.models.Point}
 
     app.shell_context_processor(shell_context)
 
